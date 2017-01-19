@@ -1,0 +1,187 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+
+<!--
+`br-browser-detect`
+A Polymer element that detects the browser, compares with compatible browsers, and provides warning/error dialog if not compatible
+
+@demo demo/index.html
+-->
+
+<dom-module id="br-browser-detect">
+<style>
+  :host #browserWarning {
+    background: #ffde00;
+    color: #555;
+  }
+  :host #browserWarning paper-button {
+    color: #555;
+  }
+  :host #browserAlert {
+    background: rgb(243,51,51);
+    color: white;
+  }
+  :host #browserAlert paper-button {
+    color: white;
+  }
+  :host .top-bar-dialog iron-icon {
+    margin-right: 20px;
+  }
+  :host .top-bar-dialog {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    display: block;
+  }
+  :host .top-bar-dialog .body {
+    margin: 6px;
+    display: flex;
+    align-items: center;
+  }
+  :host .top-bar-dialog .body .spacer {
+    flex: 1;
+  }
+</style>
+<template>
+  <paper-dialog id="browserWarning" class="top-bar-dialog" no-cancel-on-outside-click>
+    <div class="body">
+      <iron-icon icon="icons:warning"></iron-icon>
+      <span><b>Warning:</b> This application is optimized for the {{preferredBrowser}} browser, and it appears you are using a different browser. For best results, please consider using {{preferredBrowser}}.</span>
+      <span class="spacer"></span>
+      <paper-icon-button icon="icons:close" dialog-dismiss></paper-icon-button>
+    </div>
+  </paper-dialog>
+  <paper-dialog id="browserAlert" class="top-bar-dialog" no-cancel-on-outside-click>
+    <div class="body">
+      <iron-icon icon="icons:warning"></iron-icon>
+      <span><b>Warning:</b> It appears you are using an incompatible browser. The following browsers are compatible: {{_compatibleBrowserList}}. For best results, please consider using the preferred browser, {{preferredBrowser}}.</span>
+      <span class="spacer"></span>
+      <paper-icon-button icon="icons:close" dialog-dismiss></paper-icon-button>
+    </div>
+  </paper-dialog>
+</template>
+<script>
+  Polymer({
+    is: 'br-browser-detect',
+
+    properties: {
+      userBrowser: {
+        type: String,
+        value: function(){
+          return this.getBrowser();
+        },
+        notify: true,
+        reflectToAttribute: true
+      },
+      preferredBrowser: {
+        type: String,
+        value: "Chrome"
+      },
+      compatibleBrowsers: {
+        type: Array,
+        value: function(){
+          return [
+            'Chrome',
+            'Safari',
+            'Firefox'
+          ]
+        }
+      },
+      isPreferred: {
+        type: Boolean,
+        computed: '_computeIsBrowser(preferredBrowser,userBrowser)',
+        notify: true
+      },
+      isCompatible: {
+        type: Boolean,
+        computed: '_computeIsCompatible(compatibleBrowsers.*,userBrowser)',
+        notify: true
+      },
+      _compatibleBrowserList: {
+        type: String,
+        computed: '_arrayAsStringList(compatibleBrowsers.*)'
+      }
+    },
+
+    observers: [
+      '_observeCompatibility(isCompatible,isPreferred)'
+    ],
+
+    getBrowser: function(){
+      // Opera 8.0+
+      var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+      if(isOpera) return "opera";
+      // Firefox 1.0+
+      var isFirefox = typeof InstallTrigger !== 'undefined';
+      if(isFirefox) return "firefox";
+      // At least Safari 3+: "[object HTMLElementConstructor]"
+      var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+      if(isSafari) return "safari";
+      // Internet Explorer 6-11
+      var isIE = /*@cc_on!@*/false || !!document.documentMode;
+      if(isIE) return "ie";
+      // Edge 20+
+      var isEdge = !isIE && !!window.StyleMedia;
+      if(isEdge) return "edge";
+      // Chrome 1+
+      var isChrome = !!window.chrome && !!window.chrome.webstore;
+      if(isChrome) return "chrome";
+      // Blink engine detection
+      var isBlink = (isChrome || isOpera) && !!window.CSS;
+      if(isBlink) return "blink";
+
+      return "other";
+    },
+
+    _arrayAsStringList: function(arrChange,connector){
+        arr = arrChange.base;
+        if(!Array.isArray(arr)) return;
+        if(!connector) connector = "and";
+        var str = "";
+        if(arr.length === 1) return arr[0];
+        for(var i=0; i<arr.length; i++){
+          if(i === arr.length-1){
+            str += connector + " " + arr[i];
+          } else if(arr.length > 2) {
+            str += arr[i] + ", ";
+          } else {
+            str += arr[i] + " ";
+          }
+        }
+        return str;
+      },
+
+    _observeCompatibility: function(isCompatible,isPreferred){
+      if(isCompatible === true && isPreferred === true){
+        return;
+      } else if(isCompatible === true && isPreferred === false){
+        this.$.browserAlert.close();
+        this.$.browserWarning.open();
+      } else {
+        this.$.browserWarning.close();
+        this.$.browserAlert.open();
+      }
+    },
+
+    _computeIsCompatible(compatibleBrowsersChange,userBrowser){
+      compatibleBrowsers = compatibleBrowsersChange.base;
+      for(var i=0; i<compatibleBrowsers.length; i++){
+        if(compatibleBrowsers[i].toLowerCase() === userBrowser.toLowerCase()) return true;
+      }
+      return false
+    },
+
+    _computeIsBrowser: function(test,browser){
+      if(typeof test !== 'string' || typeof browser !== 'string') return;
+      return (browser.toLowerCase() === test.toLowerCase());
+    }
+  })
+</script>
+</dom-module>

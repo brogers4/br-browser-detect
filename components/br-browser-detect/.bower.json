@@ -1,0 +1,29 @@
+{
+  "name": "br-browser-detect",
+  "description": "A Polymer element that detects the browser, compares with compatible browsers, and provides warning/error dialog if not compatible",
+  "main": "br-browser-detect.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "paper-dialog": "PolymerElements/paper-dialog#^1.1.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "resolutions": {
+    "paper-dialog": "^1.1.0"
+  },
+  "homepage": "https://github.com/brogers4/br-browser-detect",
+  "_release": "6568a5cfd4",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6568a5cfd44e738cd432153a2bbdda8e62c5499e"
+  },
+  "_source": "https://github.com/brogers4/br-browser-detect.git",
+  "_target": "master",
+  "_originalSource": "brogers4/br-browser-detect",
+  "_direct": true
+}

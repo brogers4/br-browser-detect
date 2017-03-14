@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>br-browser-detect demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../br-browser-detect.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Basic br-browser-detect demo</h3>
+      <demo-snippet>
+        <span>
+          You should see a yellow warning if you are not using Chrome but are using Firefox or Safari.
+          <br /><br />
+          You should see a red warning if you are not using Chrome, Firefox, or Safari.
+        </span>
+        <template>
+          <br-browser-detect></br-browser-detect>
+        </template>
+      </demo-snippet>
+      <h3>Demo of preferred browser of Firefox.</h3>
+      <demo-snippet>
+        <span>
+          You should see a yellow warning if you are not using Firefox but are using Chrome or Safari.
+          <br /><br />
+          You should see a red warning if you are not using Firefox, Chrome, or Safari.
+        </span>
+        <template>
+          <br-browser-detect preferred-browser="Firefox"></br-browser-detect>
+        </template>
+      </demo-snippet>
+      <h3>Demo of preferred browser of Internet Explorer.</h3>
+      <demo-snippet>
+        <span>
+          You should see a red warning at the top of this page if you are not on IE.
+        </span>
+        <template>
+          <br-browser-detect preferred-browser="IE" compatible-browsers='["IE"]'></br-browser-detect>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>
